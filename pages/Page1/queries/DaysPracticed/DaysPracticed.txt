@@ -1,0 +1,46 @@
+/*
+Query to create a table that groups users based on the number of days they have practiced questions,
+only for users who were created within the specified time period.
+*/
+
+/*
+Subquery to select users created within the specified time period.
+*/
+WITH created_users AS (
+    SELECT 
+        "id" AS "userId"
+    FROM 
+        "User"
+    WHERE 
+        "createdAt" >= {{moment(DatePicker1.selectedDate).format("YYYY-MM-DD")}}::date - interval '330 minutes'
+        AND "createdAt" <= {{moment(DatePicker2.selectedDate).format("YYYY-MM-DD")}}::date + interval '1110 minutes'
+),
+
+/*
+Subquery to find the number of distinct days each user from created_users has practiced questions.
+*/
+user_practice_days AS (
+    SELECT 
+        "userId", 
+        COUNT(DISTINCT "eventDate") AS practice_days
+    FROM 
+        "DailyUserEvent"
+    WHERE 
+        "event" = 'Question'
+        AND "userId" IN (SELECT "userId" FROM created_users)
+    GROUP BY 
+        "userId"
+)
+
+/*
+Main query to create a table grouping users by the number of practice days.
+*/
+SELECT 
+    practice_days,
+    COUNT("userId") AS user_count
+FROM 
+    user_practice_days 
+GROUP BY 
+    practice_days
+ORDER BY 
+    practice_days DESC;

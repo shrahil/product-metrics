@@ -1,0 +1,49 @@
+/*
+Query to get the number of unique users who have practiced more than 10 questions 
+and were created within the specified time period.
+We are checking the sum of "eventCount" where "event" = 'Questions' in the "DailyUserEvent" table.
+*/
+
+/*
+Subquery to calculate the total questions practiced by each user
+within the specified time period.
+*/
+WITH created_users AS (
+    SELECT 
+        "id"
+    FROM 
+        "User"
+    WHERE 
+        "createdAt" >= {{moment(DatePicker1.selectedDate).format("YYYY-MM-DD")}}::date - interval '330 minutes'
+        AND "createdAt" <= {{moment(DatePicker2.selectedDate).format("YYYY-MM-DD")}}::date + interval '1110 minutes'
+),
+user_question_counts AS (
+    SELECT 
+        "userId",
+        SUM("eventCount") AS total_questions_practiced
+    FROM 
+        "DailyUserEvent"
+    WHERE 
+        "event" = 'Question'
+        AND "eventDate" BETWEEN '2024-01-01' AND '2024-12-31' -- Specify the desired time period here
+    GROUP BY 
+        "userId"
+)
+
+/*
+Subquery to select users created within the specified time period.
+*/
+
+
+/*
+Main query to count the number of unique users who have practiced more than 10 questions
+and were created within the specified time period.
+*/
+SELECT 
+    COUNT(DISTINCT uqc."userId") AS unique_users
+FROM 
+    user_question_counts uqc
+JOIN 
+    created_users cu ON uqc."userId" = cu."id"
+WHERE 
+    uqc.total_questions_practiced > 10;
