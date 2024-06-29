@@ -1,133 +1,153 @@
 {
-    "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
-    "borderColor": "#E0DEDE",
-    "isVisibleDownload": true,
-    "iconSVG": "/static/media/icon.c4395b694ca4b5a84741345b057b6866.svg",
-    "topRow": 55,
-    "isSortable": true,
-    "type": "TABLE_WIDGET_V2",
-    "inlineEditingSaveOption": "ROW_LEVEL",
-    "animateLoading": true,
-    "dynamicBindingPathList": [
-        {"key": "accentColor"},
-        {"key": "borderRadius"},
-        {"key": "boxShadow"},
-        {"key": "tableData"},
-        {"key": "primaryColumns.unique_users.computedValue"}
-    ],
-    "needsHeightForContent": true,
-    "leftColumn": 0,
-    "delimiter": ",",
-    "defaultSelectedRowIndex": 0,
-    "flexVerticalAlignment": "start",
-    "accentColor": "{{appsmith.theme.colors.primaryColor}}",
-    "onCanvasUI": {
-        "focusBGCSSVar": "--on-canvas-ui-widget-focus",
-        "disableParentSelection": false,
-        "focusColorCSSVar": "--on-canvas-ui-widget-selection",
-        "selectionBGCSSVar": "--on-canvas-ui-widget-selection",
-        "selectionColorCSSVar": "--on-canvas-ui-widget-focus"
+  "accentColor": "{{appsmith.theme.colors.primaryColor}}",
+  "animateLoading": true,
+  "borderColor": "#E0DEDE",
+  "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+  "borderWidth": "1",
+  "bottomRow": 70,
+  "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "canFreezeColumn": true,
+  "childStylesheet": {
+    "button": {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "boxShadow": "none",
+      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
     },
-    "isVisibleFilters": true,
-    "isVisible": true,
-    "enableClientSideSearch": true,
-    "version": 2,
-    "totalRecordsCount": 0,
-    "tags": [
-        "Suggested",
-        "Display"
-    ],
-    "isLoading": false,
-    "childStylesheet": {
-        "button": {
-            "boxShadow": "none",
-            "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-            "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
-        },
-        "iconButton": {
-            "boxShadow": "none",
-            "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-            "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
-        },
-        "menuButton": {
-            "boxShadow": "none",
-            "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-            "menuColor": "{{appsmith.theme.colors.primaryColor}}"
-        },
-        "editActions": {
-            "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}",
-            "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-            "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-            "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}"
-        }
+    "editActions": {
+      "discardBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "discardButtonColor": "{{appsmith.theme.colors.primaryColor}}",
+      "saveBorderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "saveButtonColor": "{{appsmith.theme.colors.primaryColor}}"
     },
-    "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
-    "columnUpdatedAt": 1716278448774,
-    "defaultSelectedRowIndices": [0],
-    "needsErrorInfo": false,
-    "mobileBottomRow": 35,
-    "widgetName": "Table1Copy",
-    "defaultPageSize": 0,
-    "columnOrder": ["unique_users"],
-    "dynamicPropertyPathList": [{"key": "tableData"}],
-    "displayName": "Table",
-    "bottomRow": 70,
-    "columnWidthMap": {},
-    "parentRowSpace": 10,
-    "hideCard": false,
-    "mobileRightColumn": 34,
-    "parentColumnSpace": 6.29931640625,
-    "dynamicTriggerPathList": [],
-    "borderWidth": "1",
-    "primaryColumns": {"unique_users": {
-        "computedValue": "{{Table1Copy.processedTableData.map((currentRow, currentIndex) => ( currentRow[\"unique_users\"]))}}",
-        "isEditable": false,
-        "notation": "standard",
-        "alias": "unique_users",
-        "enableSort": true,
-        "isSaveVisible": true,
-        "id": "unique_users",
-        "isDisabled": false,
-        "allowSameOptionsInNewRow": true,
-        "validation": {},
-        "isCellVisible": true,
-        "isDerived": false,
-        "textSize": "0.875rem",
-        "allowCellWrapping": false,
-        "index": 0,
-        "isDiscardVisible": true,
-        "isVisible": true,
-        "label": "Users With 10+ Qs",
-        "columnType": "number",
-        "thousandSeparator": true,
-        "horizontalAlignment": "LEFT",
-        "isCellEditable": false,
-        "decimals": 0,
-        "width": 150,
-        "enableFilter": true,
-        "sticky": "",
-        "originalId": "unique_users",
-        "currencyCode": "USD",
-        "verticalAlignment": "CENTER"
-    }},
-    "key": "gbp5tejdry",
-    "canFreezeColumn": true,
-    "isDeprecated": false,
-    "rightColumn": 12,
-    "textSize": "0.875rem",
-    "thumbnailSVG": "https://appcdn.appsmith.com/static/media/thumbnail.d0492f06681daa69baf92b07d3829dfc.svg",
-    "widgetId": "wwf7xd2v90",
-    "minWidth": 450,
-    "tableData": "{{TenQs.data}}",
-    "label": "Data",
-    "searchKey": "",
-    "parentId": "0",
-    "renderMode": "CANVAS",
-    "mobileTopRow": 7,
-    "horizontalAlignment": "LEFT",
-    "isVisibleSearch": true,
-    "responsiveBehavior": "fill",
-    "mobileLeftColumn": 0,
-    "isVisiblePagination": true,
-    "verticalAlignment": "CENTER"
+    "iconButton": {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "boxShadow": "none",
+      "buttonColor": "{{appsmith.theme.colors.primaryColor}}"
+    },
+    "menuButton": {
+      "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      "boxShadow": "none",
+      "menuColor": "{{appsmith.theme.colors.primaryColor}}"
+    }
+  },
+  "columnOrder": [
+    "unique_users"
+  ],
+  "columnUpdatedAt": 1716278448774,
+  "columnWidthMap": {},
+  "defaultPageSize": 0,
+  "defaultSelectedRowIndex": 0,
+  "defaultSelectedRowIndices": [
+    0
+  ],
+  "delimiter": ",",
+  "displayName": "Table",
+  "dynamicBindingPathList": [
+    {
+      "key": "accentColor"
+    },
+    {
+      "key": "borderRadius"
+    },
+    {
+      "key": "boxShadow"
+    },
+    {
+      "key": "tableData"
+    },
+    {
+      "key": "primaryColumns.unique_users.computedValue"
+    }
+  ],
+  "dynamicPropertyPathList": [
+    {
+      "key": "tableData"
+    }
+  ],
+  "dynamicTriggerPathList": [],
+  "enableClientSideSearch": true,
+  "flexVerticalAlignment": "start",
+  "hideCard": false,
+  "horizontalAlignment": "LEFT",
+  "iconSVG": "/static/media/icon.c4395b694ca4b5a84741345b057b6866.svg",
+  "inlineEditingSaveOption": "ROW_LEVEL",
+  "isDeprecated": false,
+  "isLoading": false,
+  "isSortable": true,
+  "isVisible": true,
+  "isVisibleDownload": true,
+  "isVisibleFilters": true,
+  "isVisiblePagination": true,
+  "isVisibleSearch": true,
+  "key": "gbp5tejdry",
+  "label": "Data",
+  "leftColumn": 0,
+  "minWidth": 450,
+  "mobileBottomRow": 35,
+  "mobileLeftColumn": 0,
+  "mobileRightColumn": 34,
+  "mobileTopRow": 7,
+  "needsErrorInfo": false,
+  "needsHeightForContent": true,
+  "onCanvasUI": {
+    "disableParentSelection": false,
+    "focusBGCSSVar": "--on-canvas-ui-widget-focus",
+    "focusColorCSSVar": "--on-canvas-ui-widget-selection",
+    "selectionBGCSSVar": "--on-canvas-ui-widget-selection",
+    "selectionColorCSSVar": "--on-canvas-ui-widget-focus"
+  },
+  "parentColumnSpace": 6.29931640625,
+  "parentId": "0",
+  "parentRowSpace": 10,
+  "primaryColumns": {
+    "unique_users": {
+      "alias": "unique_users",
+      "allowCellWrapping": false,
+      "allowSameOptionsInNewRow": true,
+      "columnType": "number",
+      "computedValue": "{{Table1Copy.processedTableData.map((currentRow, currentIndex) => ( currentRow[\"unique_users\"]))}}",
+      "currencyCode": "USD",
+      "decimals": 0,
+      "enableFilter": true,
+      "enableSort": true,
+      "horizontalAlignment": "LEFT",
+      "id": "unique_users",
+      "index": 0,
+      "isCellEditable": false,
+      "isCellVisible": true,
+      "isDerived": false,
+      "isDisabled": false,
+      "isDiscardVisible": true,
+      "isEditable": false,
+      "isSaveVisible": true,
+      "isVisible": true,
+      "label": "Users With 10+ Qs",
+      "notation": "standard",
+      "originalId": "unique_users",
+      "sticky": "",
+      "textSize": "0.875rem",
+      "thousandSeparator": true,
+      "validation": {},
+      "verticalAlignment": "CENTER",
+      "width": 150
+    }
+  },
+  "renderMode": "CANVAS",
+  "responsiveBehavior": "fill",
+  "rightColumn": 12,
+  "searchKey": "",
+  "tableData": "{{TenQs.data}}",
+  "tags": [
+    "Suggested",
+    "Display"
+  ],
+  "textSize": "0.875rem",
+  "thumbnailSVG": "https://appcdn.appsmith.com/static/media/thumbnail.d0492f06681daa69baf92b07d3829dfc.svg",
+  "topRow": 55,
+  "totalRecordsCount": 0,
+  "type": "TABLE_WIDGET_V2",
+  "version": 2,
+  "verticalAlignment": "CENTER",
+  "widgetId": "wwf7xd2v90",
+  "widgetName": "Table1Copy"
 }
