@@ -1,0 +1,48 @@
+/*
+  Query to count the number of users who have enrolled for a trial and practiced at least 5 questions
+  after enrolling within the specified time period.
+*/
+
+/* 
+  Subquery to select users who enrolled for a trial within the specified time period.
+*/
+WITH trial_users AS (
+    SELECT 
+        "userId",
+        "createdAt" AS "trial_start_date"
+    FROM 
+        "UserCourse"
+    WHERE  
+        "createdAt" >= {{moment(DatePicker1.selectedDate).format("YYYY-MM-DD")}}::date - interval '330 minutes'
+        AND "createdAt" <= {{moment(DatePicker2.selectedDate).format("YYYY-MM-DD")}}::date + interval '1110 minutes'
+        AND ("expiryAt" - "startedAt") < interval '5 days'
+),
+
+/*
+  Subquery to calculate the total questions practiced by each user after their trial start date.
+*/
+user_question_counts AS (
+    SELECT 
+        "due"."userId",
+        SUM("due"."eventCount") AS total_questions_practiced
+    FROM 
+        "DailyUserEvent" AS "due"
+    JOIN 
+        trial_users AS "tu" ON "due"."userId" = "tu"."userId"
+    WHERE 
+        "due"."event" = 'Question'
+        AND "due"."eventDate" > "tu"."trial_start_date"
+    GROUP BY 
+        "due"."userId"
+)
+
+/*
+  Main query to count the number of unique users who have enrolled for a trial and practiced at least 5 questions
+  after enrolling.
+*/
+SELECT 
+    COUNT(DISTINCT "uqc"."userId") AS practicedQAfterTrial
+FROM 
+    user_question_counts AS "uqc"
+WHERE 
+    "uqc".total_questions_practiced >= 1;

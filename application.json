@@ -12,8 +12,20 @@
   "icon": "camera",
   "pages": [
     {
-      "id": "Page1",
+      "id": "Retention Metrics",
       "isDefault": true
+    },
+    {
+      "id": "Activation",
+      "isDefault": false
+    },
+    {
+      "id": "Assisted",
+      "isDefault": false
+    },
+    {
+      "id": "Platform split",
+      "isDefault": false
     }
   ],
   "unpublishedApplicationDetail": {

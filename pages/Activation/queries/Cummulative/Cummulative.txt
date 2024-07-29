@@ -1,0 +1,64 @@
+/*
+Subquery to select users created within the specified time period.
+*/
+WITH created_users AS (
+    SELECT 
+        "id" AS "userId"
+    FROM 
+        "User"
+    WHERE 
+        "createdAt" >= {{moment(DatePicker1.selectedDate).format("YYYY-MM-DD")}}::date - interval '330 minutes'
+        AND "createdAt" <= {{moment(DatePicker2.selectedDate).format("YYYY-MM-DD")}}::date + interval '1110 minutes'
+),
+
+/*
+Subquery to find the number of distinct days each user from created_users has practiced questions.
+*/
+user_practice_days AS (
+    SELECT 
+        "userId", 
+        COUNT(DISTINCT "eventDate") AS "practice_days"
+    FROM 
+        "DailyUserEvent"
+    WHERE 
+        "event" = 'Question'
+        AND "userId" IN (SELECT "userId" FROM created_users)
+    GROUP BY 
+        "userId"
+),
+
+/*
+Subquery to generate cumulative practice days for each threshold.
+*/
+cumulative_practice_days AS (
+    SELECT 
+        generate_series(1, (SELECT MAX("practice_days") FROM user_practice_days)) AS "days"
+),
+
+/*
+Join cumulative practice days with user practice days to count all users who have practiced at least that many days.
+*/
+cumulative_user_counts AS (
+    SELECT 
+        cp."days",
+        COUNT(upd."userId") AS "user_count"
+    FROM 
+        cumulative_practice_days cp
+    LEFT JOIN 
+        user_practice_days upd 
+    ON 
+        upd."practice_days" >= cp."days"
+    GROUP BY 
+        cp."days"
+)
+
+/*
+Main query to select the cumulative user counts ordered by days.
+*/
+SELECT 
+    "days" AS "practice_days",
+    "user_count"
+FROM 
+    cumulative_user_counts
+ORDER BY 
+    "practice_days" DESC;

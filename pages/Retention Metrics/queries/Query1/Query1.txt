@@ -1,0 +1,10 @@
+SELECT "UserCourse"."userId" AS "UsersPracticedAtLeast10Questions"
+FROM "UserCourse"
+JOIN "DailyUserEvent" ON "UserCourse"."userId" = "DailyUserEvent"."userId"
+WHERE "UserCourse"."createdAt" >= {{moment(DatePicker1.selectedDate).format("YYYY-MM-DD")}}::date - interval '330 minutes'
+  AND "UserCourse"."createdAt" <= {{moment(DatePicker2.selectedDate).format("YYYY-MM-DD")}}::date + interval '1110 minutes'
+  AND ("UserCourse"."expiryAt" - "UserCourse"."startedAt") < interval '5 days'
+  AND "DailyUserEvent"."event"  'Question'
+  AND "DailyUserEvent"."eventDate" >= "UserCourse"."createdAt"
+GROUP BY "UserCourse"."userId"
+HAVING COUNT("DailyUserEvent"."event") = 0;
