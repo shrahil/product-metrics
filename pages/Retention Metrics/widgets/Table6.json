@@ -105,7 +105,7 @@
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "columnType": "number",
-      "computedValue": "{{Table6.processedTableData.map((currentRow, currentIndex) => ( currentRow[\"practicedqaftertrial\"]))}}",
+      "computedValue": "{{(() => { const tableData = Table6.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow[\"practicedqaftertrial\"])) :  currentRow[\"practicedqaftertrial\"] })()}}",
       "currencyCode": "USD",
       "decimals": 0,
       "enableFilter": true,

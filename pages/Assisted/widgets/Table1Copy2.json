@@ -105,7 +105,7 @@
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
       "columnType": "number",
-      "computedValue": "{{Table1Copy2.processedTableData.map((currentRow, currentIndex) => ( currentRow[\"unique_users\"]))}}",
+      "computedValue": "{{(() => { const tableData = Table1Copy2.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow[\"unique_users\"])) :  currentRow[\"unique_users\"] })()}}",
       "currencyCode": "USD",
       "decimals": 0,
       "enableFilter": true,
