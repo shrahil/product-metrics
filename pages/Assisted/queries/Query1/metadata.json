@@ -27,9 +27,9 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "name": "Query1",
     "pageId": "Assisted",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

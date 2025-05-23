@@ -27,9 +27,9 @@
         "key": "body"
       }
     ],
-    "executeOnLoad": false,
     "name": "No_Practice_after_trial",
     "pageId": "Retention Metrics",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }
