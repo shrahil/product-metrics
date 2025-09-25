@@ -1,0 +1,21 @@
+SELECT 
+  COUNT(DISTINCT p."userId") AS total_paid_users,
+  COUNT(DISTINCT CASE 
+    WHEN NOT EXISTS (
+      SELECT 1 
+      FROM "DailyUserEvent" due 
+      WHERE due."userId" = p."userId" 
+        AND due."eventDate" >= CURRENT_DATE - INTERVAL '30 days'
+    ) THEN p."userId" 
+  END) AS inactive_30_days,
+  COUNT(DISTINCT CASE 
+    WHEN NOT EXISTS (
+      SELECT 1 
+      FROM "DailyUserEvent" due 
+      WHERE due."userId" = p."userId" 
+        AND due."eventDate" >= CURRENT_DATE - INTERVAL '7 days'
+    ) THEN p."userId" 
+  END) AS inactive_7_days
+FROM "Payment" p
+WHERE p."status" = 'responseReceivedSuccess' 
+  AND p."createdAt" > '2025-04-01';

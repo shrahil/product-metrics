@@ -134,7 +134,7 @@
   },
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 51,
+  "rightColumn": 58,
   "searchKey": "",
   "tableData": "{{PracticedQAfterTrial.data}}",
   "tags": [

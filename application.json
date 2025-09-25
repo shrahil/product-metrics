@@ -31,6 +31,10 @@
     {
       "id": "Platform split",
       "isDefault": false
+    },
+    {
+      "id": "Churn",
+      "isDefault": false
     }
   ],
   "unpublishedApplicationDetail": {

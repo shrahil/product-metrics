@@ -6,7 +6,7 @@ FROM
 LEFT JOIN 
     "FcmToken" ON "UserProfile"."userId" = "FcmToken"."userId"
 WHERE 
-    DATE("UserProfile"."createdAt") = '2024-07-28'
+    DATE("UserProfile"."createdAt") > '2024-10-01'
     AND "UserProfile"."neetExamYear" IS NULL
     AND "FcmToken"."app" IN ('neetprep', 'abhyas', 'reflexpg')
 GROUP BY 

@@ -1,24 +1,23 @@
 {
-  "gitSyncId": "664c50c6369d527a59213df2_572662dd-5d6f-43a4-863d-70f1fa405f47",
+  "gitSyncId": "664c50c6369d527a59213df2_d320eb16-a6dc-48a7-a192-e4eb33fff038",
   "unpublishedPage": {
     "isHidden": false,
     "layouts": [
       {
         "dsl": {
           "backgroundColor": "none",
-          "bottomRow": 1080,
+          "bottomRow": 860,
           "canExtend": true,
           "containerStyle": "none",
           "detachFromLayout": true,
           "dynamicBindingPathList": [],
-          "dynamicTriggerPathList": [],
           "leftColumn": 0,
-          "minHeight": 1292,
+          "minHeight": 800,
           "parentColumnSpace": 1,
           "parentRowSpace": 1,
-          "rightColumn": 4896,
+          "rightColumn": 1224,
           "snapColumns": 64,
-          "snapRows": 124,
+          "snapRows": 78,
           "topRow": 0,
           "type": "CANVAS_WIDGET",
           "version": 94,
@@ -27,7 +26,7 @@
         }
       }
     ],
-    "name": "Retention Metrics",
-    "slug": "retention-metrics"
+    "name": "Churn",
+    "slug": "churn"
   }
 }

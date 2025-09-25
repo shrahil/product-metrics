@@ -1,0 +1,2 @@
+SELECT ("UserStreakData"."createdAt" + interval '330 minutes')::date as "date",count("userId") as "Count" FROM "UserStreakData"
+GROUP BY "date" ORDER BY "date" asc

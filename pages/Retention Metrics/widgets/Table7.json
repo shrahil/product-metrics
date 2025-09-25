@@ -4,8 +4,9 @@
   "borderColor": "#E0DEDE",
   "borderRadius": "{{appsmith.theme.borderRadius.appBorderRadius}}",
   "borderWidth": "1",
-  "bottomRow": 108,
+  "bottomRow": 84,
   "boxShadow": "{{appsmith.theme.boxShadow.appBoxShadow}}",
+  "cachedTableData": {},
   "canFreezeColumn": true,
   "childStylesheet": {
     "button": {
@@ -31,19 +32,22 @@
     }
   },
   "columnOrder": [
-    "practice_days",
-    "user_count"
+    "count"
   ],
-  "columnUpdatedAt": 1716278752164,
+  "columnUpdatedAt": 1751451044649,
   "columnWidthMap": {},
+  "customIsLoading": false,
+  "customIsLoadingValue": "",
   "defaultPageSize": 0,
   "defaultSelectedRowIndex": 0,
   "defaultSelectedRowIndices": [
     0
   ],
   "delimiter": ",",
-  "displayName": "Table",
   "dynamicBindingPathList": [
+    {
+      "key": "tableData"
+    },
     {
       "key": "accentColor"
     },
@@ -54,13 +58,7 @@
       "key": "boxShadow"
     },
     {
-      "key": "tableData"
-    },
-    {
-      "key": "primaryColumns.practice_days.computedValue"
-    },
-    {
-      "key": "primaryColumns.user_count.computedValue"
+      "key": "primaryColumns.count.computedValue"
     }
   ],
   "dynamicPropertyPathList": [
@@ -70,52 +68,43 @@
   ],
   "dynamicTriggerPathList": [],
   "enableClientSideSearch": true,
+  "endOfData": false,
   "flexVerticalAlignment": "start",
-  "hideCard": false,
   "horizontalAlignment": "LEFT",
-  "iconSVG": "/static/media/icon.c4395b694ca4b5a84741345b057b6866.svg",
   "inlineEditingSaveOption": "ROW_LEVEL",
-  "isDeprecated": false,
   "isLoading": false,
   "isSortable": true,
   "isVisible": true,
   "isVisibleDownload": true,
-  "isVisibleFilters": true,
+  "isVisibleFilters": false,
   "isVisiblePagination": true,
   "isVisibleSearch": true,
-  "key": "gbp5tejdry",
+  "key": "kwc9pzjpq9",
   "label": "Data",
-  "leftColumn": 11,
+  "leftColumn": 42,
   "minWidth": 450,
-  "mobileBottomRow": 35,
+  "mobileBottomRow": 137,
   "mobileLeftColumn": 0,
   "mobileRightColumn": 34,
-  "mobileTopRow": 7,
+  "mobileTopRow": 109,
   "needsErrorInfo": false,
-  "needsHeightForContent": true,
-  "onCanvasUI": {
-    "disableParentSelection": false,
-    "focusBGCSSVar": "--on-canvas-ui-widget-focus",
-    "focusColorCSSVar": "--on-canvas-ui-widget-selection",
-    "selectionBGCSSVar": "--on-canvas-ui-widget-selection",
-    "selectionColorCSSVar": "--on-canvas-ui-widget-focus"
-  },
-  "parentColumnSpace": 6.29931640625,
   "parentId": "0",
   "parentRowSpace": 10,
   "primaryColumns": {
-    "practice_days": {
-      "alias": "practice_days",
+    "count": {
+      "alias": "count",
       "allowCellWrapping": false,
       "allowSameOptionsInNewRow": true,
+      "cellBackground": "",
       "columnType": "number",
-      "computedValue": "{{(() => { const tableData = Table1Copy1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow[\"practice_days\"])) :  currentRow[\"practice_days\"] })()}}",
+      "computedValue": "{{(() => { const tableData = Table7.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => (currentRow[\"count\"])) : count })()}}",
       "currencyCode": "USD",
       "decimals": 0,
       "enableFilter": true,
       "enableSort": true,
+      "fontStyle": "",
       "horizontalAlignment": "LEFT",
-      "id": "practice_days",
+      "id": "count",
       "index": 0,
       "isCellEditable": false,
       "isCellVisible": true,
@@ -125,41 +114,11 @@
       "isEditable": false,
       "isSaveVisible": true,
       "isVisible": true,
-      "label": "practice_days",
+      "label": "PaymentsAnytimeAfterTrial",
       "notation": "standard",
-      "originalId": "practice_days",
+      "originalId": "count",
       "sticky": "",
-      "textSize": "0.875rem",
-      "thousandSeparator": true,
-      "validation": {},
-      "verticalAlignment": "CENTER",
-      "width": 150
-    },
-    "user_count": {
-      "alias": "user_count",
-      "allowCellWrapping": false,
-      "allowSameOptionsInNewRow": true,
-      "columnType": "number",
-      "computedValue": "{{(() => { const tableData = Table1Copy1.processedTableData || []; return tableData.length > 0 ? tableData.map((currentRow, currentIndex) => ( currentRow[\"user_count\"])) :  currentRow[\"user_count\"] })()}}",
-      "currencyCode": "USD",
-      "decimals": 0,
-      "enableFilter": true,
-      "enableSort": true,
-      "horizontalAlignment": "LEFT",
-      "id": "user_count",
-      "index": 1,
-      "isCellEditable": false,
-      "isCellVisible": true,
-      "isDerived": false,
-      "isDisabled": false,
-      "isDiscardVisible": true,
-      "isEditable": false,
-      "isSaveVisible": true,
-      "isVisible": true,
-      "label": "user_count",
-      "notation": "standard",
-      "originalId": "user_count",
-      "sticky": "",
+      "textColor": "",
       "textSize": "0.875rem",
       "thousandSeparator": true,
       "validation": {},
@@ -169,20 +128,15 @@
   },
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 42,
+  "rightColumn": 55,
   "searchKey": "",
-  "tableData": "{{DaysPracticed.data}}",
-  "tags": [
-    "Suggested",
-    "Display"
-  ],
+  "tableData": "{{Payment_anytime_aftertrial.data}}",
   "textSize": "0.875rem",
-  "thumbnailSVG": "https://appcdn.appsmith.com/static/media/thumbnail.d0492f06681daa69baf92b07d3829dfc.svg",
-  "topRow": 17,
+  "topRow": 70,
   "totalRecordsCount": 0,
   "type": "TABLE_WIDGET_V2",
   "version": 2,
   "verticalAlignment": "CENTER",
-  "widgetId": "lyouq9ipo0",
-  "widgetName": "Table1Copy1"
+  "widgetId": "6hrutbc80o",
+  "widgetName": "Table7"
 }

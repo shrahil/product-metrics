@@ -1,11 +1,11 @@
 {
-  "gitSyncId": "664c50c6369d527a59213df2_0f9b5332-10ba-43eb-9d70-8c210fd938d3",
-  "id": "Platform split_Query1",
+  "gitSyncId": "664c50c6369d527a59213df2_73d95975-54cb-4241-8591-19b8b0583568",
+  "id": "Platform split_Query2",
   "pluginId": "postgres-plugin",
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n    \"FcmToken\".\"app\",\n    COUNT(*) AS count\nFROM \n    \"UserProfile\"\nLEFT JOIN \n    \"FcmToken\" ON \"UserProfile\".\"userId\" = \"FcmToken\".\"userId\"\nWHERE \n    DATE(\"UserProfile\".\"createdAt\") > '2024-10-01'\n    AND \"UserProfile\".\"neetExamYear\" IS NULL\n    AND \"FcmToken\".\"app\" IN ('neetprep', 'abhyas', 'reflexpg')\nGROUP BY \n    \"FcmToken\".\"app\";",
+      "body": "SELECT * FROM \"UserLogin\" LIMIT 10;",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -23,9 +23,9 @@
       "pluginId": "postgres-plugin"
     },
     "dynamicBindingPathList": [],
-    "name": "Query1",
+    "name": "Query2",
     "pageId": "Platform split",
-    "runBehaviour": "ON_PAGE_LOAD",
+    "runBehaviour": "MANUAL",
     "userSetOnLoad": false
   }
 }

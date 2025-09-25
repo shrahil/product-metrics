@@ -25,7 +25,7 @@ user_question_counts AS (
         "DailyUserEvent"
     WHERE 
         "event" = 'Question'
-        AND "eventDate" BETWEEN '2024-01-01' AND '2024-12-31' -- Specify the desired time period here
+        AND "eventDate" BETWEEN '2024-08-01' AND '2024-08-13' -- Specify the desired time period here
     GROUP BY 
         "userId"
 )
@@ -46,4 +46,4 @@ FROM
 JOIN 
     created_users cu ON uqc."userId" = cu."id"
 WHERE 
-    uqc.total_questions_practiced > 20;
+    uqc.total_questions_practiced > 10;

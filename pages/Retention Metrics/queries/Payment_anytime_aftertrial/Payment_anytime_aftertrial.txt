@@ -5,5 +5,4 @@ WHERE "UserCourse"."createdAt" >= {{moment(DatePicker1.selectedDate).format("YYY
   AND "UserCourse"."createdAt" <= {{moment(DatePicker2.selectedDate).format("YYYY-MM-DD")}}::date + interval '1110 minutes'
   AND ("UserCourse"."expiryAt" - "UserCourse"."startedAt") < interval '5 days'
   AND "Payment"."createdAt" > "UserCourse"."createdAt"
-	AND "Payment"."createdAt" <= {{moment(DatePicker2.selectedDate).format("YYYY-MM-DD")}}::date + interval '1110 minutes'
 	AND "Payment"."status" = 'responseReceivedSuccess';
