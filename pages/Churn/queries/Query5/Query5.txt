@@ -1,0 +1,99 @@
+WITH recent_snapshots AS (
+	SELECT 
+	id,
+	created_at,
+	CAST(SUBSTRING(object FROM 'userId:\s*(\d+)') AS INTEGER) as user_id,
+	CAST(SUBSTRING(object FROM 'overallTotal:\s*(\d+)') AS INTEGER) as total_score,
+	CAST(SUBSTRING(object FROM 'overallPhysics:\s*(\d+)') AS INTEGER) as physics_score,
+	CAST(SUBSTRING(object FROM 'overallChemistry:\s*(\d+)') AS INTEGER) as chemistry_score,
+	CAST(SUBSTRING(object FROM 'overallBiology:\s*(\d+)') AS INTEGER) as biology_score,
+	ROW_NUMBER() OVER (PARTITION BY SUBSTRING(object FROM 'userId:\s*(\d+)') ORDER BY created_at DESC) as rn
+	FROM versions
+	WHERE item_type = 'PerformanceSnapshot'
+	AND created_at >= NOW() - INTERVAL '3 months'
+	LIMIT 10000
+),
+performance_data AS (
+	SELECT 
+	curr.user_id,
+	curr.created_at as latest_date,
+	prev.created_at as previous_date,
+	EXTRACT(DAY FROM curr.created_at - prev.created_at) as days_gap,
+	curr.total_score as current_score,
+	COALESCE(prev.total_score, 0) as previous_score,
+	curr.total_score - COALESCE(prev.total_score, 0) as improvement,
+	curr.physics_score - COALESCE(prev.physics_score, 0) as physics_change,
+	curr.chemistry_score - COALESCE(prev.chemistry_score, 0) as chemistry_change,
+	curr.biology_score - COALESCE(prev.biology_score, 0) as biology_change
+	FROM recent_snapshots curr
+	LEFT JOIN recent_snapshots prev ON curr.user_id = prev.user_id AND prev.rn = 2
+	WHERE curr.rn = 1
+)
+SELECT 
+    user_id,
+    current_score,
+    improvement,
+    days_gap,
+
+    -- Clear category for filtering
+    CASE 
+        WHEN improvement >= 50 THEN 'EXCELLENT'
+        WHEN improvement >= 20 THEN 'GOOD'
+        WHEN improvement BETWEEN 1 AND 19 THEN 'SLIGHT_PROGRESS'
+        WHEN improvement = 0 THEN 'NO_CHANGE'
+        WHEN improvement BETWEEN -19 AND -1 THEN 'SLIGHT_DECLINE'
+        WHEN improvement <= -20 THEN 'NEEDS_ATTENTION'
+    END as category,
+
+    -- Send notification?
+    CASE 
+        WHEN improvement >= 20 THEN true  -- Send positive notification
+        WHEN improvement <= -20 THEN true  -- Send motivational notification
+        ELSE false
+    END as send_notification,
+
+    -- Notification message
+    CASE 
+        WHEN improvement >= 50 THEN 
+            'Amazing work! You scored ' || improvement || ' more points. Keep it up!'
+        WHEN improvement >= 20 THEN 
+            'Great progress! You improved by ' || improvement || ' points this week!'
+        WHEN improvement BETWEEN 1 AND 19 THEN 
+            'Nice! You gained ' || improvement || ' points. Keep practicing!'
+        WHEN improvement = 0 THEN 
+            'Your score is steady. Ready to push forward?'
+        WHEN improvement <= -20 THEN 
+            'We noticed your score dropped by ' || ABS(improvement) || ' points. Need help? Check out our study tips!'
+        ELSE 
+            NULL  -- Don't send notification
+    END as notification_message,
+
+    -- Subject-wise breakdown for detailed message
+    CASE 
+        WHEN physics_change > 0 OR chemistry_change > 0 OR biology_change > 0 THEN
+            'Strengths: ' ||
+            CASE WHEN physics_change > 0 THEN 'Physics (+' || physics_change || ') ' ELSE '' END ||
+            CASE WHEN chemistry_change > 0 THEN 'Chemistry (+' || chemistry_change || ') ' ELSE '' END ||
+            CASE WHEN biology_change > 0 THEN 'Biology (+' || biology_change || ')' ELSE '' END
+        ELSE NULL
+    END as strong_subjects,
+
+    CASE 
+        WHEN physics_change < 0 OR chemistry_change < 0 OR biology_change < 0 THEN
+            'Focus on: ' ||
+            CASE WHEN physics_change < 0 THEN 'Physics (' || physics_change || ') ' ELSE '' END ||
+            CASE WHEN chemistry_change < 0 THEN 'Chemistry (' || chemistry_change || ') ' ELSE '' END ||
+            CASE WHEN biology_change < 0 THEN 'Biology (' || biology_change || ')' ELSE '' END
+        ELSE NULL
+    END as weak_subjects
+
+FROM performance_data
+WHERE previous_score > 0  -- Only users with previous data
+ORDER BY 
+    CASE 
+        WHEN improvement >= 50 THEN 1
+        WHEN improvement >= 20 THEN 2
+        WHEN improvement <= -20 THEN 3
+        ELSE 4
+    END,
+    improvement DESC;

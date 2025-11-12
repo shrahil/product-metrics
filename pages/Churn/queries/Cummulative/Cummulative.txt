@@ -11,7 +11,7 @@ SELECT
   COUNT(DISTINCT CASE 
     WHEN NOT EXISTS (
       SELECT 1 
-      FROM "DailyUserEvent" due 
+      FROM "DailyUserEvent" due
       WHERE due."userId" = p."userId" 
         AND due."eventDate" >= CURRENT_DATE - INTERVAL '7 days'
     ) THEN p."userId" 

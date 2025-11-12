@@ -55,7 +55,7 @@
   "mobileLeftColumn": 0,
   "mobileRightColumn": 19,
   "mobileTopRow": 4,
-  "onDateSelected": "{{Query3.run();\nDaysPracticed.run()}}",
+  "onDateSelected": "{{Revenue_Impact.run();\nDaysPracticed.run()}}",
   "parentColumnSpace": 19.8125,
   "parentId": "0",
   "parentRowSpace": 10,

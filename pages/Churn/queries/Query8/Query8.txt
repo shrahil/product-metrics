@@ -1,0 +1,1 @@
+SELECT COUNT(DISTINCT "userId") FROM public."DailyUserEvent" WHERE "eventDate" >= '2025-09-25';

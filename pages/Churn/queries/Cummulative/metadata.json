@@ -5,7 +5,7 @@
   "pluginType": "DB",
   "unpublishedAction": {
     "actionConfiguration": {
-      "body": "SELECT \n  COUNT(DISTINCT p.\"userId\") AS total_paid_users,\n  COUNT(DISTINCT CASE \n    WHEN NOT EXISTS (\n      SELECT 1 \n      FROM \"DailyUserEvent\" due \n      WHERE due.\"userId\" = p.\"userId\" \n        AND due.\"eventDate\" >= CURRENT_DATE - INTERVAL '30 days'\n    ) THEN p.\"userId\" \n  END) AS inactive_30_days,\n  COUNT(DISTINCT CASE \n    WHEN NOT EXISTS (\n      SELECT 1 \n      FROM \"DailyUserEvent\" due \n      WHERE due.\"userId\" = p.\"userId\" \n        AND due.\"eventDate\" >= CURRENT_DATE - INTERVAL '7 days'\n    ) THEN p.\"userId\" \n  END) AS inactive_7_days\nFROM \"Payment\" p\nWHERE p.\"status\" = 'responseReceivedSuccess' \n  AND p.\"createdAt\" > '2025-04-01';",
+      "body": "SELECT \n  COUNT(DISTINCT p.\"userId\") AS total_paid_users,\n  COUNT(DISTINCT CASE \n    WHEN NOT EXISTS (\n      SELECT 1 \n      FROM \"DailyUserEvent\" due \n      WHERE due.\"userId\" = p.\"userId\" \n        AND due.\"eventDate\" >= CURRENT_DATE - INTERVAL '30 days'\n    ) THEN p.\"userId\" \n  END) AS inactive_30_days,\n  COUNT(DISTINCT CASE \n    WHEN NOT EXISTS (\n      SELECT 1 \n      FROM \"DailyUserEvent\" due\n      WHERE due.\"userId\" = p.\"userId\" \n        AND due.\"eventDate\" >= CURRENT_DATE - INTERVAL '7 days'\n    ) THEN p.\"userId\" \n  END) AS inactive_7_days\nFROM \"Payment\" p\nWHERE p.\"status\" = 'responseReceivedSuccess' \n  AND p.\"createdAt\" > '2025-04-01';",
       "encodeParamsToggle": true,
       "paginationType": "NONE",
       "pluginSpecifiedTemplates": [
@@ -13,7 +13,7 @@
           "value": true
         }
       ],
-      "timeoutInMillisecond": 10000
+      "timeoutInMillisecond": 100000
     },
     "confirmBeforeExecute": false,
     "datasource": {

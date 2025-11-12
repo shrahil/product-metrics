@@ -1,0 +1,3 @@
+SELECT count(*) as "2026_registered" FROM public."UserProfile" where (("neetExamYear"=2026 or "boardExamYear" in (2026)) or ("neetExamYear"=2026 and "boardExamYear" in (2025)))
+and "createdAt" >= {{moment(DatePicker3.selectedDate).format('YYYY-MM-DD')}}::date - INTERVAL '330 minutes'
+        AND "createdAt" <= {{moment(DatePicker4.selectedDate).format('YYYY-MM-DD')}}::date + INTERVAL '1110 minutes';

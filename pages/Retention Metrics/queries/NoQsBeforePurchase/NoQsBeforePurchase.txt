@@ -1,0 +1,21 @@
+WITH sept_users AS (
+  SELECT "id" AS "userId", "createdAt" AS user_created_at
+  FROM "User"
+  WHERE DATE_TRUNC('month', "createdAt") = '2025-09-01'
+),
+sept_purchases AS (
+  SELECT "userId", MIN("createdAt") AS first_purchase_at
+  FROM "Payment"
+  WHERE DATE_TRUNC('month', "createdAt") = '2025-09-01'
+	AND "status" = 'responseReceivedSuccess'
+  GROUP BY "userId"
+)
+SELECT u."userId", u.user_created_at, p.first_purchase_at
+FROM sept_users u
+JOIN sept_purchases p ON u."userId" = p."userId"
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM "Answer" a
+  WHERE a."userId" = u."userId"
+    AND a."createdAt" < p.first_purchase_at
+);

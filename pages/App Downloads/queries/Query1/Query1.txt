@@ -1,0 +1,11 @@
+SELECT 
+    DATE("createdAt") AS "date",
+    COUNT(*) AS "payment_count"
+FROM public."Payment"
+WHERE "paymentForId" NOT IN (3125,2135)
+  AND "paymentDesc" LIKE 'ORDS%'
+  AND "status" = 'responseReceivedSuccess' and 
+        "createdAt" >= {{moment(DatePicker1.selectedDate).format('YYYY-MM-DD')}}::date - INTERVAL '330 minutes'
+        AND "createdAt" <= {{moment(DatePicker2.selectedDate).format('YYYY-MM-DD')}}::date + INTERVAL '1110 minutes'
+GROUP BY DATE("createdAt")
+ORDER BY DATE("createdAt")

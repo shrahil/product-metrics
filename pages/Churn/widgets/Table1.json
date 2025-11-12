@@ -35,7 +35,7 @@
     "inactive_30_days",
     "inactive_7_days"
   ],
-  "columnUpdatedAt": 1758797185481,
+  "columnUpdatedAt": 1758798913854,
   "columnWidthMap": {},
   "defaultPageSize": 0,
   "defaultSelectedRowIndex": 0,
@@ -213,7 +213,7 @@
   },
   "renderMode": "CANVAS",
   "responsiveBehavior": "fill",
-  "rightColumn": 45,
+  "rightColumn": 58,
   "searchKey": "",
   "tableData": "{{Cummulative.data}}",
   "tags": [

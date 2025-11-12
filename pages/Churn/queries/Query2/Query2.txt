@@ -1,0 +1,33 @@
+WITH monthly_cohorts AS (
+	SELECT 
+	DATE_TRUNC('month', p."createdAt") as cohort_month,
+	p."userId"
+	FROM "Payment" p
+	WHERE p."status" = 'responseReceivedSuccess'
+	AND p."createdAt" >= '2025-01-01'
+),
+cohort_activity AS (
+	SELECT          
+	mc.cohort_month,    
+	COUNT(DISTINCT mc."userId") as cohort_size,
+	COUNT(DISTINCT CASE 
+				WHEN due."eventDate" >= CURRENT_DATE - INTERVAL '7 days' 
+				THEN mc."userId" 
+				END) as active_7d,
+	COUNT(DISTINCT CASE 
+				WHEN due."eventDate" >= CURRENT_DATE - INTERVAL '30 days' 
+				THEN mc."userId" 
+				END) as active_30d
+	FROM monthly_cohorts mc
+	LEFT JOIN "DailyUserEvent" due ON mc."userId" = due."userId"
+	GROUP BY mc.cohort_month
+)
+SELECT 
+  cohort_month,
+  cohort_size,
+  active_7d,
+  active_30d,
+  ROUND(active_7d * 100.0 / cohort_size, 2) as retention_7d_percent,
+  ROUND(active_30d * 100.0 / cohort_size, 2) as retention_30d_percent
+FROM cohort_activity
+ORDER BY cohort_month DESC;

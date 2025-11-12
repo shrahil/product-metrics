@@ -1,0 +1,28 @@
+WITH sept_users AS (
+  SELECT "id" AS "userId"
+  FROM "User"
+  WHERE DATE_TRUNC('month', "createdAt") = '2025-09-01'
+),
+practice_one_day AS (
+  SELECT 
+    "userId",
+    MIN(DATE("eventDate")) AS practice_date,
+    COUNT(DISTINCT DATE("eventDate")) AS practice_days
+  FROM "DailyUserEvent"
+  WHERE "event" = 'Question'
+  GROUP BY "userId"
+  HAVING COUNT(DISTINCT DATE("eventDate")) = 2
+),
+first_payment AS (
+  SELECT 
+    "userId",
+    MIN(DATE("createdAt")) AS payment_date
+  FROM "Payment"
+  WHERE "status" = 'responseReceivedSuccess'
+  GROUP BY "userId"
+)
+SELECT COUNT(*) AS users_with_payment_after_one_practice_day
+FROM practice_one_day p
+JOIN first_payment f ON p."userId" = f."userId"
+JOIN sept_users u ON p."userId" = u."userId"
+WHERE f.payment_date > p.practice_date;

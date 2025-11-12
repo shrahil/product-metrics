@@ -1,0 +1,12 @@
+WITH sept_users AS (
+  SELECT "id" AS "userId", "createdAt" AS user_created_at
+  FROM "User"
+  WHERE DATE_TRUNC('month', "createdAt") = '2025-09-01'
+)
+SELECT u."userId", u.user_created_at
+FROM sept_users u
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM "Answer" a
+  WHERE a."userId" = u."userId"
+);

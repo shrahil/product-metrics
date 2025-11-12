@@ -1,0 +1,10 @@
+SELECT 
+  due."eventDate"::date as activity_date,
+  COUNT(DISTINCT p."userId") as daily_active_users
+FROM "Payment" p
+JOIN "DailyUserEvent" due ON p."userId" = due."userId"
+WHERE p."status" = 'responseReceivedSuccess' 
+  AND p."createdAt" > '2025-04-01'
+  AND due."eventDate" >= CURRENT_DATE - INTERVAL '30 days'
+GROUP BY due."eventDate"::date 
+ORDER BY due."eventDate"::date desc;

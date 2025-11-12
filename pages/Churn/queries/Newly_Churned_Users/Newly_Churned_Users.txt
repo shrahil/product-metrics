@@ -1,0 +1,21 @@
+SELECT 
+  CURRENT_DATE - INTERVAL '1 day' * days_ago.days as activity_date,
+  COUNT(DISTINCT p."userId") as newly_churned_users
+FROM (
+	SELECT generate_series(1, 30) as days
+) days_ago
+CROSS JOIN "Payment" p
+WHERE p."status" = 'responseReceivedSuccess' 
+  AND p."createdAt" > '2025-04-01'     
+  AND EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due          
+		WHERE due."userId" = p."userId" 
+		AND due."eventDate" = CURRENT_DATE - INTERVAL '1 day' * days_ago.days
+	)
+  AND NOT EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due2 
+		WHERE due2."userId" = p."userId" 
+		AND due2."eventDate" > CURRENT_DATE - INTERVAL '1 day' * days_ago.days
+	)
+GROUP BY days_ago.days
+ORDER BY activity_date DESC;

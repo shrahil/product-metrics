@@ -1,0 +1,31 @@
+WITH daily_engagement AS (
+	SELECT 
+	due."eventDate",
+	due."userId",
+	COUNT(*) as daily_events 
+	FROM "DailyUserEvent" due
+	JOIN "Payment" p ON due."userId" = p."userId"
+	WHERE p."status" = 'responseReceivedSuccess' 
+	AND p."createdAt" > '2025-04-01'
+	AND due."eventDate" >= CURRENT_DATE - INTERVAL '30 days'
+	GROUP BY due."eventDate", due."userId"
+)
+SELECT 
+  CASE 
+    WHEN daily_events >= 10 THEN 'High Engagement'
+    WHEN daily_events >= 5 THEN 'Medium Engagement' 
+    WHEN daily_events >= 2 THEN 'Low Engagement'
+    ELSE 'Minimal Engagement'
+  END as engagement_level,
+  COUNT(DISTINCT "userId") as unique_users,
+  COUNT(*) as total_sessions,
+  ROUND(AVG(daily_events), 1) as avg_events_per_session
+FROM daily_engagement
+GROUP BY 
+  CASE 
+    WHEN daily_events >= 10 THEN 'High Engagement'
+    WHEN daily_events >= 5 THEN 'Medium Engagement' 
+    WHEN daily_events >= 2 THEN 'Low Engagement'
+    ELSE 'Minimal Engagement'
+  END
+ORDER BY MIN(daily_events) DESC;

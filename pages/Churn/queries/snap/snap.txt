@@ -1,0 +1,29 @@
+-- Fast version: Get latest 2 snapshots per user for comparison
+WITH recent_snapshots AS (
+	SELECT 
+	id,
+	created_at,
+	CAST(SUBSTRING(object FROM 'userId:\s*(\d+)') AS INTEGER) as user_id,
+	CAST(SUBSTRING(object FROM 'overallTotal:\s*(\d+)') AS INTEGER) as total_score,
+	CAST(SUBSTRING(object FROM 'overallPhysics:\s*(\d+)') AS INTEGER) as physics_score,
+	CAST(SUBSTRING(object FROM 'overallChemistry:\s*(\d+)') AS INTEGER) as chemistry_score,
+	CAST(SUBSTRING(object FROM 'overallBiology:\s*(\d+)') AS INTEGER) as biology_score,
+	ROW_NUMBER() OVER (PARTITION BY SUBSTRING(object FROM 'userId:\s*(\d+)') ORDER BY created_at DESC) as rn
+	FROM versions
+	WHERE item_type = 'PerformanceSnapshot'
+	AND created_at >= NOW() - INTERVAL '6 months'  -- Only last 6 months
+	LIMIT 10000  -- Limit total records processed
+)
+SELECT 
+    curr.user_id,
+    curr.created_at as latest_date,
+    prev.created_at as previous_date,
+    curr.total_score as current_score,
+    curr.total_score - COALESCE(prev.total_score, 0) as improvement,
+    curr.physics_score - COALESCE(prev.physics_score, 0) as physics_change,
+    curr.chemistry_score - COALESCE(prev.chemistry_score, 0) as chemistry_change,
+    curr.biology_score - COALESCE(prev.biology_score, 0) as biology_change
+FROM recent_snapshots curr
+LEFT JOIN recent_snapshots prev ON curr.user_id = prev.user_id AND prev.rn = 2
+WHERE curr.rn = 1
+ORDER BY curr.user_id;

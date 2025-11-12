@@ -1,0 +1,23 @@
+SELECT 
+    COALESCE(p."paymentForId", p."actualCourseId") AS "Course ID",
+    c."name" AS "Course Name",
+    SUM(p."amount") AS "Total Sales",
+    SUM(p."amount") FILTER (WHERE p."hasShipment") AS "Shipment Sales",
+    SUM(p."amount") FILTER (WHERE NOT p."hasShipment" OR p."hasShipment" IS NULL) AS "Non-Shipment Sales",
+    COUNT(DISTINCT p."userEmail") AS "Total Users",
+    COUNT(DISTINCT p."userEmail") FILTER (WHERE p."hasShipment") AS "Shipment Users",
+    COUNT(DISTINCT p."userEmail") FILTER (WHERE NOT p."hasShipment" OR p."hasShipment" IS NULL) AS "Non-Shipment Users"
+FROM 
+    "Payment" p
+LEFT JOIN 
+    "Course" c ON c.id = COALESCE(p."paymentForId", p."actualCourseId")
+WHERE 
+    p."createdAt" >= '2025-10-01' 
+    AND p."createdAt" <= '2025-10-30' 
+    AND p."status" = 'responseReceivedSuccess'
+    AND (p."paymentForId" IS NOT NULL OR p."actualCourseId" IS NOT NULL)
+GROUP BY 
+    COALESCE(p."paymentForId", p."actualCourseId"),
+    c."name"
+ORDER BY 
+    "Total Sales" DESC;

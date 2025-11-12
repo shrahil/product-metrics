@@ -1,0 +1,20 @@
+SELECT 
+    up."userId",
+    up."displayName",
+    up."phone",
+    COALESCE(SUM(due."eventCount"), 0) AS "total_questions_practiced",
+    COUNT(DISTINCT uat."adaptiveTestAttemptId") AS "adaptive_tests_attempted",
+    COUNT(DISTINCT DATE(due."eventDate")) AS "practice_days"
+FROM 
+    "UserProfile" up
+LEFT JOIN 
+    "DailyUserEvent" due
+    ON up."userId" = due."userId"
+    AND due."event"='Question'  
+LEFT JOIN 
+    "UserAdaptiveTest" uat
+    ON up."userId" = uat."userId"
+GROUP BY 
+    up."userId", up."displayName", up."phone"
+ORDER BY 
+    "total_questions_practiced" DESC;

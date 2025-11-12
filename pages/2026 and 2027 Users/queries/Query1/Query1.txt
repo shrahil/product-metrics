@@ -1,0 +1,81 @@
+WITH UniquePaymentCourse AS (
+    SELECT DISTINCT ON (p.id)
+        p.id,
+        p."amount",
+        p."userEmail",
+        p."courseOfferId",
+        p."hasShipment" AS payment_has_shipment,
+        co."hasShipment" AS offer_has_shipment,
+        COALESCE(
+            p."paymentForId",
+            p."actualCourseId",
+            co."courseId",
+            co."actualCourseId",
+            uc."courseId",
+            ci."courseId"
+        ) AS course_id,
+        -- Determine shipment status based on offer ID
+        CASE 
+            WHEN p."courseOfferId" IN (14017622, 13798108, 13578761, 13879781, 13879782, 
+                                       12975792, 12975793, 13111375, 12973522, 12973529, 
+                                       13111376, 12975536) 
+            THEN COALESCE(co."hasShipment", false)
+            ELSE COALESCE(p."hasShipment", false)
+        END AS is_shipment,
+        -- Track which logic was used
+        CASE 
+            WHEN p."courseOfferId" IN (14017622, 13798108, 13578761, 13879781, 13879782, 
+                                       12975792, 12975793, 13111375, 12973522, 12973529, 
+                                       13111376, 12975536) 
+            THEN 'CourseOffer'
+            ELSE 'Payment'
+        END AS shipment_source
+    FROM 
+        "Payment" p
+    LEFT JOIN 
+        "CourseOffer" co ON co.id = p."courseOfferId"
+    LEFT JOIN 
+        "UserCourse" uc ON uc."paymentId" = p.id
+    LEFT JOIN 
+        "CourseInvitation" ci ON ci."email" = p."userEmail" AND ci."amount" = p."amount"
+    WHERE 
+        p."createdAt" >= '2025-10-01' 
+        AND p."createdAt" <= '2025-10-30' 
+        AND p."status" = 'responseReceivedSuccess'
+    ORDER BY 
+        p.id, 
+        CASE 
+            WHEN p."paymentForId" IS NOT NULL THEN 1
+            WHEN p."actualCourseId" IS NOT NULL THEN 2
+            WHEN co."courseId" IS NOT NULL THEN 3
+            WHEN uc."courseId" IS NOT NULL THEN 4
+            WHEN ci."courseId" IS NOT NULL THEN 5
+            ELSE 6
+        END
+)
+SELECT 
+    upc.course_id AS "Course ID",
+    CASE 
+        WHEN upc.course_id IS NULL THEN '(No Course Mapped)'
+        ELSE c."name"
+    END AS "Course Name",
+    SUM(upc."amount") AS "Total Sales",
+    SUM(upc."amount") FILTER (WHERE upc.is_shipment) AS "Shipment Sales",
+    SUM(upc."amount") FILTER (WHERE NOT upc.is_shipment) AS "Non-Shipment Sales",
+    ROUND(SUM(upc."amount") FILTER (WHERE upc.is_shipment) * 100.0 / NULLIF(SUM(upc."amount"), 0), 2) AS "Shipment %",
+    COUNT(DISTINCT upc."userEmail") AS "Total Users",
+    COUNT(DISTINCT upc."userEmail") FILTER (WHERE upc.is_shipment) AS "Shipment Users",
+    COUNT(DISTINCT upc."userEmail") FILTER (WHERE NOT upc.is_shipment) AS "Non-Shipment Users",
+    COUNT(*) AS "Payment Count",
+    COUNT(*) FILTER (WHERE upc.shipment_source = 'CourseOffer') AS "Payments Using Offer Logic",
+    COUNT(*) FILTER (WHERE upc.shipment_source = 'Payment') AS "Payments Using Payment Logic"
+FROM 
+    UniquePaymentCourse upc
+LEFT JOIN 
+    "Course" c ON c.id = upc.course_id
+GROUP BY 
+    upc.course_id,
+    c."name"
+ORDER BY 
+    CASE WHEN upc.course_id IS NULL THEN 0 ELSE 1 END,
+    "Total Sales" DESC;

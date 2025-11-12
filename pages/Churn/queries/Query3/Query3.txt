@@ -1,0 +1,27 @@
+WITH user_activity_trend AS (
+	SELECT 
+	p."userId",
+	COUNT(DISTINCT CASE 
+				WHEN due."eventDate" >= CURRENT_DATE - INTERVAL '7 days' 
+				THEN due."eventDate" 
+				END) as days_active_last_7,
+	COUNT(DISTINCT CASE 
+				WHEN due."eventDate" BETWEEN CURRENT_DATE - INTERVAL '14 days' 
+				AND CURRENT_DATE - INTERVAL '8 days'
+				THEN due."eventDate" 
+				END) as days_active_prev_7,             
+	MAX(due."eventDate") as last_activity_date              
+	FROM "Payment" p                                    
+	LEFT JOIN "DailyUserEvent" due ON p."userId" = due."userId"                              
+	WHERE p."status" = 'responseReceivedSuccess'                           
+	AND p."createdAt" > '2025-04-01'                             
+	GROUP BY p."userId"                          
+)                                     
+SELECT                                           
+  COUNT(*) as users_at_risk,                                      
+  ROUND(AVG(days_active_prev_7), 1) as avg_prev_week_activity,                         
+  ROUND(AVG(days_active_last_7), 1) as avg_current_week_activity
+FROM user_activity_trend
+WHERE days_active_prev_7 >= 3  -- Were previously active
+  AND days_active_last_7 <= 1  -- But now barely active
+  AND last_activity_date >= CURRENT_DATE - INTERVAL '3 days';

@@ -1,0 +1,22 @@
+SELECT 
+    e."userId",
+    up."firstName" AS user_name,
+    up.phone AS phone_number,
+    COUNT(DISTINCT DATE(e."eventDate")) AS practice_days
+FROM public."DailyUserEvent" e
+INNER JOIN public."User" u ON e."userId" = u.id
+LEFT JOIN public."UserProfile" up ON u.id = up."userId"
+WHERE 
+    e."event" = 'Question'
+    AND e."eventDate" > '2025-05-01'
+    AND e."userId" IN (
+			SELECT p."userId"
+			FROM public."Payment" p
+			WHERE 
+			p."status" = 'responseReceivedSuccess'      
+			AND p."createdAt" > '2025-05-01'
+		)
+GROUP BY e."userId", up."firstName", up.phone
+HAVING COUNT(DISTINCT DATE(e."eventDate")) > 10 
+    AND COUNT(DISTINCT DATE(e."eventDate")) <= 30
+ORDER BY practice_days DESC;

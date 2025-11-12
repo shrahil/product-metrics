@@ -1,0 +1,17 @@
+SELECT 
+    e."userId",
+    COUNT(DISTINCT DATE(e."eventDate")) AS practice_days
+FROM public."DailyUserEvent" e
+WHERE 
+    e."event" = 'Question'
+    AND e."eventDate" > '2025-05-01'
+    AND e."userId" IN (
+			SELECT p."userId"
+			FROM public."Payment" p
+			WHERE 
+			p."status" = 'responseReceivedSuccess'
+			AND p."createdAt" > '2025-05-01'
+		)
+GROUP BY e."userId"
+HAVING COUNT(DISTINCT DATE(e."eventDate")) > 75
+ORDER BY practice_days DESC;

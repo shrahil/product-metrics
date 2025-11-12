@@ -1,0 +1,27 @@
+SELECT 
+  date_series.check_date as churn_date,
+  COUNT(DISTINCT CASE 
+				WHEN NOT EXISTS (
+					SELECT 1 FROM "DailyUserEvent" due2 
+					WHERE due2."userId" = p."userId" 
+					AND due2."eventDate" >= date_series.check_date - INTERVAL '7 days'
+					AND due2."eventDate" <= date_series.check_date
+				) THEN p."userId" 
+				END) AS churned_7_days,
+  COUNT(DISTINCT CASE 
+				WHEN NOT EXISTS (
+					SELECT 1 FROM "DailyUserEvent" due2 
+					WHERE due2."userId" = p."userId" 
+					AND due2."eventDate" >= date_series.check_date - INTERVAL '30 days'
+					AND due2."eventDate" <= date_series.check_date
+				) THEN p."userId" 
+				END) AS churned_30_days
+FROM (
+	SELECT CURRENT_DATE - INTERVAL '1 day' * generate_series(0, 29) as check_date
+) date_series
+CROSS JOIN "Payment" p
+WHERE p."status" = 'responseReceivedSuccess' 
+  AND p."createdAt" > '2025-04-01'
+  AND p."createdAt"::date <= date_series.check_date -- Only include users who had already paid by that date
+GROUP BY date_series.check_date
+ORDER BY date_series.check_date DESC;

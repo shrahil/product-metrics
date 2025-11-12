@@ -1,0 +1,6 @@
+select count(distinct p."userId") as "2026_paid _users" from "Payment" p
+                left join "UserProfile" up on p."userId"=up."userId"
+                left join "UserCourse" uc on p."userId"=uc."userId" where p."createdAt" >= {{moment(DatePicker1.selectedDate).format('YYYY-MM-DD')}}::date - INTERVAL '330 minutes'
+        AND p."createdAt" <= {{moment(DatePicker2.selectedDate).format('YYYY-MM-DD')}}::date + INTERVAL '1110 minutes' and  up."createdAt" >= {{moment(DatePicker3.selectedDate).format('YYYY-MM-DD')}}::date - INTERVAL '330 minutes'
+        AND up."createdAt" <= {{moment(DatePicker4.selectedDate).format('YYYY-MM-DD')}}::date + INTERVAL '1110 minutes'
+				and ((up."neetExamYear"=2026 or up."boardExamYear" in (2026)) or (up."neetExamYear"=2026 and up."boardExamYear" in (2025))) and p."paymentForId"  not in (5931,6227,5934) and p."status"='responseReceivedSuccess' and uc."expiryAt"<='2026-05-05'; 

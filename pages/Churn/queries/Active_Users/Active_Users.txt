@@ -1,0 +1,15 @@
+SELECT 
+  COUNT(DISTINCT p."userId") AS total_paid_users,
+  COUNT(DISTINCT CASE 
+    WHEN due."eventDate" = CURRENT_DATE THEN p."userId" 
+  END) AS active_today,
+  COUNT(DISTINCT CASE 
+    WHEN due."eventDate" >= CURRENT_DATE - INTERVAL '7 days' THEN p."userId" 
+  END) AS active_week,
+  COUNT(DISTINCT CASE 
+    WHEN due."eventDate" >= CURRENT_DATE - INTERVAL '30 days' THEN p."userId" 
+  END) AS active_month
+FROM "Payment" p
+LEFT JOIN "DailyUserEvent" due ON p."userId" = due."userId"
+WHERE p."status" = 'responseReceivedSuccess' 
+  AND p."createdAt" > '2025-04-01';

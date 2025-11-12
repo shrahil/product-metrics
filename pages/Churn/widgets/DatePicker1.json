@@ -50,7 +50,7 @@
   "maxDynamicHeight": 9000,
   "minDate": "1920-12-31T18:30:00.000Z",
   "minDynamicHeight": 4,
-  "onDateSelected": "{{DaysPracticed.run(() => resetWidget(\"Table1\", true), () => {});\nQuery3.run()}}",
+  "onDateSelected": "{{DaysPracticed.run(() => resetWidget(\"Table1\", true), () => {});\nRevenue_Impact.run()}}",
   "parentColumnSpace": 20.0625,
   "parentId": "0",
   "parentRowSpace": 10,

@@ -1,0 +1,31 @@
+SELECT 
+  CASE 
+    WHEN activity_days >= 20 THEN 'Power Users'
+    WHEN activity_days >= 10 THEN 'Regular Users'
+    WHEN activity_days >= 3 THEN 'Casual Users'
+    WHEN activity_days >= 1 THEN 'Minimal Users'
+    ELSE 'Inactive Users'
+  END as user_segment,
+  COUNT(*) as user_count,
+  ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage,
+  ROUND(AVG(activity_days), 1) as avg_activity_days
+FROM (
+	SELECT 
+	p."userId",
+	COUNT(DISTINCT due."eventDate") as activity_days
+	FROM "Payment" p
+	LEFT JOIN "DailyUserEvent" due ON p."userId" = due."userId" 
+	AND due."eventDate" >= CURRENT_DATE - INTERVAL '30 days'
+	WHERE p."status" = 'responseReceivedSuccess' 
+	AND p."createdAt" > '2025-04-01'
+	GROUP BY p."userId"
+) user_activity
+GROUP BY 
+  CASE 
+    WHEN activity_days >= 20 THEN 'Power Users'
+    WHEN activity_days >= 10 THEN 'Regular Users'
+    WHEN activity_days >= 3 THEN 'Casual Users'
+    WHEN activity_days >= 1 THEN 'Minimal Users'
+    ELSE 'Inactive Users'
+  END
+ORDER BY MIN(activity_days) DESC;

@@ -1,0 +1,42 @@
+WITH QuestionEvents AS (
+  SELECT 
+      "userId", 
+      MAX("eventCount") AS "questions_attempted",
+      COUNT(DISTINCT DATE("eventDate")) AS "practice_days"
+  FROM 
+      "DailyUserEvent"
+  WHERE 
+      "event" = 'Question'
+  GROUP BY 
+      "userId"
+)
+SELECT 
+    up."phone",
+    up."displayName",
+    uat."userId",
+    COUNT(DISTINCT uat."adaptiveTestAttemptId") AS "test_attempt_count",
+    COALESCE(qe."questions_attempted", 0) AS "questions_attempted",
+    COALESCE(qe."practice_days", 0) AS "practice_days"
+FROM 
+    public."UserAdaptiveTest" uat
+LEFT JOIN 
+    "Payment" p 
+    ON uat."userId" = p."userId"
+LEFT JOIN 
+    "UserProfile" up 
+    ON uat."userId" = up."userId"
+LEFT JOIN 
+    QuestionEvents qe 
+    ON uat."userId" = qe."userId"
+WHERE 
+    p."status" NOT IN ('responseReceivedSuccess')
+GROUP BY 
+    uat."userId",
+    up."phone",
+    up."displayName",
+    qe."questions_attempted",
+    qe."practice_days"
+HAVING 
+    COUNT(DISTINCT uat."adaptiveTestAttemptId") > 10
+ORDER BY 
+    "test_attempt_count" DESC;

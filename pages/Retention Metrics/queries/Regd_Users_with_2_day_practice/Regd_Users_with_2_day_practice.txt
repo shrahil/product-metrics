@@ -1,0 +1,15 @@
+WITH sept_users AS (
+  SELECT "id" AS "userId"
+  FROM "User"
+  WHERE DATE_TRUNC('month', "createdAt") = '2025-09-01'
+),
+practice_days AS (
+  SELECT "userId", COUNT(DISTINCT DATE("eventDate")) AS practice_day_count
+  FROM "DailyUserEvent"
+  WHERE "event" = 'Question'
+  GROUP BY "userId"
+)
+SELECT COUNT(*) AS users_with_one_practice_day
+FROM sept_users u
+JOIN practice_days p ON u."userId" = p."userId"
+WHERE p.practice_day_count = 2;

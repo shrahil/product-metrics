@@ -1,0 +1,121 @@
+-- Enhanced Retention Analysis with Weekly Breakdowns
+WITH first_payment AS (
+	SELECT 
+	"userId",
+	MIN("createdAt")::date as first_payment_date
+	FROM "Payment" 
+	--WHERE "status" = 'responseReceivedSuccess'
+	GROUP BY "userId"
+),
+detailed_retention AS (
+	SELECT 
+	fp."userId",
+	fp.first_payment_date,
+
+	-- Day 1 activity (payment day)
+	CASE WHEN EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due 
+		WHERE due."userId" = fp."userId" 
+		AND due."eventDate" = fp.first_payment_date
+	) THEN 1 ELSE 0 END as active_day_0,
+
+	-- Week 1 (Days 1-7)
+	CASE WHEN EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due 
+		WHERE due."userId" = fp."userId" 
+		AND due."eventDate" BETWEEN fp.first_payment_date + 1 AND fp.first_payment_date + 7
+	) THEN 1 ELSE 0 END as retained_week_1,
+
+	-- Week 2 (Days 8-14) 
+	CASE WHEN EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due 
+		WHERE due."userId" = fp."userId" 
+		AND due."eventDate" BETWEEN fp.first_payment_date + 8 AND fp.first_payment_date + 14
+	) THEN 1 ELSE 0 END as retained_week_2,
+
+	-- Week 3 (Days 15-21)
+	CASE WHEN EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due 
+		WHERE due."userId" = fp."userId" 
+		AND due."eventDate" BETWEEN fp.first_payment_date + 15 AND fp.first_payment_date + 21
+	) THEN 1 ELSE 0 END as retained_week_3,
+
+	-- Week 4 (Days 22-30)
+	CASE WHEN EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due 
+		WHERE due."userId" = fp."userId" 
+		AND due."eventDate" BETWEEN fp.first_payment_date + 22 AND fp.first_payment_date + 30
+	) THEN 1 ELSE 0 END as retained_week_4,
+
+	-- Overall periods
+	CASE WHEN EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due 
+		WHERE due."userId" = fp."userId" 
+		AND due."eventDate" BETWEEN fp.first_payment_date + 1 AND fp.first_payment_date + 7
+	) THEN 1 ELSE 0 END as retained_7d,
+
+	CASE WHEN EXISTS (
+		SELECT 1 FROM "DailyUserEvent" due 
+		WHERE due."userId" = fp."userId" 
+		AND due."eventDate" BETWEEN fp.first_payment_date + 1 AND fp.first_payment_date + 30
+	) THEN 1 ELSE 0 END as retained_30d
+
+	FROM first_payment fp
+	WHERE fp.first_payment_date >= CURRENT_DATE - INTERVAL '60 days'
+)
+SELECT 
+  COUNT(*) as total_users,
+
+  -- Payment day activity
+  ROUND(AVG(active_day_0) * 100, 2) as active_on_payment_day_percent,
+
+  -- Weekly retention rates
+  ROUND(AVG(retained_week_1) * 100, 2) as week_1_retention_percent,
+  ROUND(AVG(retained_week_2) * 100, 2) as week_2_retention_percent, 
+  ROUND(AVG(retained_week_3) * 100, 2) as week_3_retention_percent,
+  ROUND(AVG(retained_week_4) * 100, 2) as week_4_retention_percent,
+
+  -- Overall retention (your original metrics)
+  ROUND(AVG(retained_7d) * 100, 2) as retention_7d_percent,
+  ROUND(AVG(retained_30d) * 100, 2) as retention_30d_percent,
+
+  -- User behavior patterns
+  COUNT(CASE WHEN retained_7d = 0 AND retained_30d = 1 THEN 1 END) as late_activators,
+  COUNT(CASE WHEN retained_7d = 1 AND retained_30d = 1 THEN 1 END) as consistent_users,
+  COUNT(CASE WHEN retained_7d = 1 AND retained_30d = 0 THEN 1 END) as early_dropoffs -- This shouldn't happen given the logic
+
+FROM detailed_retention;
+
+-- Additional Query: Find what triggers late activation
+-- (Run this separately to understand late activators)
+WITH first_payment AS (
+	SELECT "userId", MIN("createdAt")::date as first_payment_date
+	FROM "Payment" WHERE "status" = 'responseReceivedSuccess'
+	GROUP BY "userId"
+),
+late_activators AS (
+	SELECT 
+	fp."userId", 
+	fp.first_payment_date,
+	MIN(due."eventDate") as first_activity_date,
+	MIN(due."eventDate") - fp.first_payment_date as days_to_first_activity
+	FROM first_payment fp
+	JOIN "DailyUserEvent" due ON fp."userId" = due."userId"
+	WHERE due."eventDate" > fp.first_payment_date + 7 -- After week 1
+	AND due."eventDate" <= fp.first_payment_date + 30 -- Within 30 days
+	AND fp.first_payment_date >= CURRENT_DATE - INTERVAL '60 days'
+	AND NOT EXISTS (
+		-- Exclude users who were active in week 1
+		SELECT 1 FROM "DailyUserEvent" due2 
+		WHERE due2."userId" = fp."userId" 
+		AND due2."eventDate" BETWEEN fp.first_payment_date + 1 AND fp.first_payment_date + 7
+	)
+	GROUP BY fp."userId", fp.first_payment_date
+)
+SELECT 
+  COUNT(*) as total_late_activators,
+  ROUND(AVG(days_to_first_activity), 1) as avg_days_to_activation,
+  COUNT(CASE WHEN days_to_first_activity BETWEEN 8 AND 14 THEN 1 END) as activated_week_2,
+  COUNT(CASE WHEN days_to_first_activity BETWEEN 15 AND 21 THEN 1 END) as activated_week_3,
+  COUNT(CASE WHEN days_to_first_activity BETWEEN 22 AND 30 THEN 1 END) as activated_week_4
+FROM late_activators;

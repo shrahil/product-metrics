@@ -1,0 +1,8 @@
+select count(distinct p."userId") as "paid_users_with Noyear" from "Payment" p
+                left join "UserProfile" up on p."userId"=up."userId"
+                left join "UserCourse" uc on p."userId"=uc."userId" where 
+								p."createdAt" >= {{moment(DatePicker1.selectedDate).format('YYYY-MM-DD')}}::date - INTERVAL '330 minutes'
+        AND p."createdAt" <= {{moment(DatePicker2.selectedDate).format('YYYY-MM-DD')}}::date + INTERVAL '1110 minutes'
+				and up."createdAt" >= {{moment(DatePicker3.selectedDate).format('YYYY-MM-DD')}}::date - INTERVAL '330 minutes'
+        AND up."createdAt" <= {{moment(DatePicker4.selectedDate).format('YYYY-MM-DD')}}::date + INTERVAL '1110 minutes'
+				and (up."neetExamYear" is NULL or up."boardExamYear" is NUll)  and p."status"='responseReceivedSuccess'

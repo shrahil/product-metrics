@@ -35,6 +35,22 @@
     {
       "id": "Churn",
       "isDefault": false
+    },
+    {
+      "id": "App Downloads",
+      "isDefault": false
+    },
+    {
+      "id": "2026 and 2027 Users",
+      "isDefault": false
+    },
+    {
+      "id": "Page1",
+      "isDefault": false
+    },
+    {
+      "id": "Analytics Dashboard",
+      "isDefault": false
     }
   ],
   "unpublishedApplicationDetail": {
